@@ -1,0 +1,19 @@
+[project]
+name = "db-pinjamyuk"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "denypratamas", email = "pdeny7@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "faker>=40.39.0",
+]
+
+[project.scripts]
+db-pinjamyuk = "db_pinjamyuk:main"
+
+[build-system]
+requires = ["uv_build>=0.12.8,<0.13.0"]
+build-backend = "uv_build"
