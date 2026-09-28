@@ -1,4 +1,3 @@
-
 from faker import Faker
 import random
 from datetime import datetime, timedelta
@@ -14,7 +13,7 @@ JUMLAH_GPS = 3000
 
 CABANG_REAL = [
     {"id": "CB001", "nama": "Cabang Bandung Buah Batu", "kota": "Bandung", "prov": "Jawa Barat", "plat": "D", "jalan": "Jl. Buah Batu No. 123"},
-    {"id": "CB002", "nama": "Cabang Jakarta Selatan", "kota": "Jakarta", "prov": "DKI Jakarta", "plat": "B", "jalan": "Jl. TB Simatupang No. 45"},
+    {"id": "CB002", "nama": "Cabang Jakarta Selatan", "kota": "Jakarta", "prov": "DKI Jakarta", "plat": "B", "jalan": "Jl. HR Rasuna Said No. 45"},
     {"id": "CB003", "nama": "Cabang Surabaya Gubeng", "kota": "Surabaya", "prov": "Jawa Timur", "plat": "L", "jalan": "Jl. Raya Gubeng No. 88"},
     {"id": "CB004", "nama": "Cabang Bogor Pajajaran", "kota": "Bogor", "prov": "Jawa Barat", "plat": "F", "jalan": "Jl. Pajajaran No. 20"},
     {"id": "CB005", "nama": "Cabang Tangerang BSD", "kota": "Tangerang", "prov": "Banten", "plat": "B", "jalan": "Jl. BSD Raya No. 10"},
@@ -66,21 +65,21 @@ for c in CABANG_REAL:
             plat_data.append((plat, c['id']))
 random.shuffle(plat_data)
 
-print("Generating SQL REALISTIS...")
+print("Generating...")
 
-with open("rentalpinjam_dummy_REALISTIS.sql", "w", encoding="utf-8") as f:
+with open("rentalpinjam_dummy.sql", "w", encoding="utf-8") as f:
     f.write("USE rentalpinjam;\nSET FOREIGN_KEY_CHECKS=0;\nSET AUTOCOMMIT=0;\n")
     f.write("TRUNCATE TABLE pembayaran; TRUNCATE TABLE gps_log; TRUNCATE TABLE penyewaan; TRUNCATE TABLE member; TRUNCATE TABLE kendaraan; TRUNCATE TABLE pegawai; TRUNCATE TABLE pelanggan; TRUNCATE TABLE cabang;\n")
 
-    # CABANG REALISTIS
+    # CABANG 
     print("1. Cabang")
     vals = []
     for c in CABANG_REAL:
         alamat = f"{c['jalan']}, {c['kota']}, {c['prov']}"
         vals.append(f"('{c['id']}','{clean(c['nama'])}','{clean(alamat)}','08{random.randint(1000000000,9999999999)}',{random.randint(5,30)},{random.randint(20,80)})")
-    f.write("\n-- CABANG REALISTIS\nINSERT INTO cabang VALUES\n" + ",\n".join(vals) + ";\n")
+    f.write("\n-- CABANG\nINSERT INTO cabang VALUES\n" + ",\n".join(vals) + ";\n")
 
-    # PELANGGAN - kota dan alamat sinkron
+    # PELANGGAN 
     print("2. Pelanggan")
     for bs in range(0, JUMLAH_PELANGGAN, 500):
         batch = pelanggan_ids[bs:bs+500]
@@ -96,7 +95,7 @@ with open("rentalpinjam_dummy_REALISTIS.sql", "w", encoding="utf-8") as f:
             vals.append(f"('{pid}','{nik}','{clean(fake.name())}','{clean(alamat)}','{fake.phone_number()[:20]}','{fake.email()}','{fake.date_of_birth(minimum_age=17, maximum_age=60)}','{random.choice(['Laki-laki','Perempuan'])}','{random.choice(['Member','Non-Member'])}','Aktif')")
         f.write("\nINSERT INTO pelanggan VALUES\n" + ",\n".join(vals) + ";\n")
 
-    # KENDARAAN - plat sesuai daerah cabang
+    # KENDARAAN
     print("3. Kendaraan - plat sesuai cabang")
     for bs in range(0, JUMLAH_KENDARAAN, 100):
         batch_kids = kendaraan_ids[bs:bs+100]
@@ -107,7 +106,7 @@ with open("rentalpinjam_dummy_REALISTIS.sql", "w", encoding="utf-8") as f:
             vals.append(f"('{kid}','{nopol}','{merek}','{model}',{random.randint(2019,2025)},'{random.choice(warna_list)}',{random.choice([5,7])},'MPV','{random.choice(['Manual','Automatic'])}','Bensin',{random.randint(300000,1500000)},'Tersedia','{id_cabang}')")
         f.write("\nINSERT IGNORE INTO kendaraan VALUES\n" + ",\n".join(vals) + ";\n")
 
-    # PEGAWAI - alamat sesuai cabang tempat kerja
+    # PEGAWAI 
     print("4. Pegawai")
     vals = []
     for pid in pegawai_ids:
@@ -172,4 +171,4 @@ with open("rentalpinjam_dummy_REALISTIS.sql", "w", encoding="utf-8") as f:
 
     f.write("\nSET FOREIGN_KEY_CHECKS=1;\nCOMMIT;\n")
 
-print("Done bosku - REALISTIS!")
+print("Done bosku")
